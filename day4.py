@@ -1,7 +1,7 @@
 import re
 
 def main():
-    with open("testinput.txt", 'r') as file:
+    with open("input.txt", 'r') as file:
         #print(part1(file))
         #file.seek(0)
         print(part2(file))
@@ -20,7 +20,7 @@ def part1(file):
     return total_sum
 
 def part2(file):
-    list_of_scratchers= [1 for _ in file]
+    wins = []
     file.seek(0)
     for i, scratcher in enumerate(file):
         win_count = 0
@@ -28,10 +28,16 @@ def part2(file):
         for num in list(filter(None, scratcher[1].split(' '))):
             if num in list(filter(None, scratcher[0].split(' '))):
                 win_count += 1
-        for j in range(win_count):
-            list_of_scratchers[i+j+1] += 1
-    print(list_of_scratchers)
-    return sum(list_of_scratchers)
+        wins.append(win_count)
+    cards= len(wins) * [1]
+    print(wins)
+    for i in range(len(cards)):
+        for j in range(i+1, i+1+wins[i]):
+            cards[j] += cards[i]
+    print(cards)
+
+
+    return sum(cards)
 
 if __name__ == "__main__":
     main()        
