@@ -30,13 +30,9 @@ def part2(file):
                 win_count += 1
         wins.append(win_count)
     cards= len(wins) * [1]
-    print(wins)
     for i in range(len(cards)):
         for j in range(i+1, i+1+wins[i]):
             cards[j] += cards[i]
-    print(cards)
-
-
     return sum(cards)
 
 if __name__ == "__main__":
