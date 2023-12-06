@@ -1,37 +1,33 @@
 import re
 
 def main():
-    with open("input.txt", 'r') as file:
-        input_str = file.readlines()
-        file.seek(0)
-        input_str_2 = file.read()
-        #print(input_str_2)
-        seeds = get_seeds([int(x) for x in input_str[0].replace('seeds: ', '').strip().split(' ')])
-        s2s_map = re.search("seed-to-soil map:.*?soil-to-fertilizer map:", input_str_2, re.DOTALL).group(0)
-        s2f_map = re.search("soil-to-fertilizer map:.*?fertilizer-to-water map:", input_str_2, re.DOTALL).group(0)
-        f2w_map = re.search("fertilizer-to-water map:.*?water-to-light map:", input_str_2, re.DOTALL).group(0)
-        w2l_map = re.search("water-to-light map:.*?light-to-temperature map:", input_str_2, re.DOTALL).group(0)
-        l2t_map = re.search("light-to-temperature map:.*?temperature-to-humidity map:", input_str_2, re.DOTALL).group(0)
-        t2h_map = re.search("temperature-to-humidity map:.*?humidity-to-location map:", input_str_2, re.DOTALL).group(0)
-        h2l_map = re.search("humidity-to-location map:.*?$", input_str_2, re.DOTALL).group(0)
-        locations = []
-        for seed in seeds:
-            soil = map_value(s2s_map, seed)
-            fert = map_value(s2f_map, soil)
-            water = map_value(f2w_map, fert)
-            light = map_value(w2l_map, water)
-            temp = map_value(l2t_map, light)
-            hum = map_value(t2h_map, temp)
-            locations.append(map_value(h2l_map, hum))
-        print(min(locations))
+    with open("testinput.txt", 'r') as file:
+        input_str = file.read()
+        min_v = 9999999999999999999999
+        seeds = [int(x) for x in re.search("seeds:.*?\n", input_str, re.DOTALL).group(0).replace('seeds: ', '').strip().split(' ')]
+        for i in range(0, len(seeds), 2):
+            for j in range(seeds[i], seeds[i]+seeds[i+1]):
+                value = extract_location(input_str, j)
+                if(value < min_v):
+                    min_v = value
+        print(min_v)
        
-def get_seeds(s_in):
-    seeds = []
-    for i in range(0, len(s_in), 2):
-        for j in range(s_in[i], s_in[i]+s_in[i+1]):
-            seeds.append(j)
-    return seeds
-        
+def extract_location(s_in, seed):
+    s2s_map = re.search("seed-to-soil map:.*?soil-to-fertilizer map:", s_in, re.DOTALL).group(0)
+    s2f_map = re.search("soil-to-fertilizer map:.*?fertilizer-to-water map:", s_in, re.DOTALL).group(0)
+    f2w_map = re.search("fertilizer-to-water map:.*?water-to-light map:", s_in, re.DOTALL).group(0)
+    w2l_map = re.search("water-to-light map:.*?light-to-temperature map:", s_in, re.DOTALL).group(0)
+    l2t_map = re.search("light-to-temperature map:.*?temperature-to-humidity map:", s_in, re.DOTALL).group(0)
+    t2h_map = re.search("temperature-to-humidity map:.*?humidity-to-location map:", s_in, re.DOTALL).group(0)
+    h2l_map = re.search("humidity-to-location map:.*?$", s_in, re.DOTALL).group(0)
+    soil = map_value(s2s_map, seed)
+    fert = map_value(s2f_map, soil)
+    water = map_value(f2w_map, fert)
+    light = map_value(w2l_map, water)
+    temp = map_value(l2t_map, light)
+    hum = map_value(t2h_map, temp)
+    return map_value(h2l_map, hum)
+       
 
 def map_value(m, i):
     m = list(m.split('\n'))
