@@ -1,12 +1,14 @@
 import re
+import sys
+from tqdm import tqdm
 
 def main():
-    with open("testinput.txt", 'r') as file:
+    with open("input.txt", 'r') as file:
         input_str = file.read()
-        min_v = 9999999999999999999999
+        min_v = sys.maxsize
         seeds = [int(x) for x in re.search("seeds:.*?\n", input_str, re.DOTALL).group(0).replace('seeds: ', '').strip().split(' ')]
         for i in range(0, len(seeds), 2):
-            for j in range(seeds[i], seeds[i]+seeds[i+1]):
+            for j in tqdm(range(seeds[i], seeds[i]+seeds[i+1])):
                 value = extract_location(input_str, j)
                 if(value < min_v):
                     min_v = value

@@ -1,44 +1,31 @@
 import re
-import threading
+import multiprocessing
+from tqdm import tqdm
+import sys
+
 
 def main():
     with open("input.txt", 'r') as file:
         input_str = file.read()
         seeds = [int(x) for x in re.search("seeds:.*?\n", input_str, re.DOTALL).group(0).replace('seeds: ', '').strip().split(' ')]
-        size = len(seeds)//10
-        t1 = threading.Thread(target=loop_seeds, args=(list(split(seeds, size))[0], input_str))
-        t2 = threading.Thread(target=loop_seeds, args=(list(split(seeds, size))[1], input_str))
-        t3 = threading.Thread(target=loop_seeds, args=(list(split(seeds, size))[2], input_str))
-        t4 = threading.Thread(target=loop_seeds, args=(list(split(seeds, size))[3], input_str))
-        t5 = threading.Thread(target=loop_seeds, args=(list(split(seeds, size))[4], input_str))
-        t6 = threading.Thread(target=loop_seeds, args=(list(split(seeds, size))[5], input_str))
-        t7 = threading.Thread(target=loop_seeds, args=(list(split(seeds, size))[6], input_str))
-        t8 = threading.Thread(target=loop_seeds, args=(list(split(seeds, size))[7], input_str))
-        t9 = threading.Thread(target=loop_seeds, args=(list(split(seeds, size))[8], input_str))
-        t10 = threading.Thread(target=loop_seeds, args=(list(split(seeds, size))[9], input_str))
-
+        size = len(seeds)//5
+        t1 = multiprocessing.Process(target=loop_seeds, args=(list(split(seeds, size))[0], input_str))
+        t2 = multiprocessing.Process(target=loop_seeds, args=(list(split(seeds, size))[1], input_str))
+        t3 = multiprocessing.Process(target=loop_seeds, args=(list(split(seeds, size))[2], input_str))
+        t4 = multiprocessing.Process(target=loop_seeds, args=(list(split(seeds, size))[3], input_str))
+        t5 = multiprocessing.Process(target=loop_seeds, args=(list(split(seeds, size))[4], input_str))
 
         t1.start()
         t2.start()
         t3.start()
         t4.start()
         t5.start()
-        t6.start()
-        t7.start()
-        t8.start()
-        t9.start()
-        t10.start()
 
         t1.join()
         t2.join()
         t3.join()
         t4.join()
         t5.join()
-        t6.join()
-        t7.join()
-        t8.join()
-        t9.join()
-        t10.join()
 
 
 
@@ -47,11 +34,11 @@ def split(list_a, chunk_size):
     yield list_a[i:i + chunk_size]
 
 def loop_seeds(seeds, input_str):
-    min_v = 9999999999999999999999
+    min_v = sys.maxsize
     print(seeds)
     for i in range(0, len(seeds), 2):
         print(i)
-        for j in range(seeds[i], seeds[i]+seeds[i+1]):
+        for j in tqdm(range(seeds[i], seeds[i]+seeds[i+1])):
             value = extract_location(input_str, j)
             if(value < min_v):
                 min_v = value
