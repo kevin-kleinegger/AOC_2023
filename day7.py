@@ -18,7 +18,6 @@ def part2(input):
     sum = 0 
     for i in range(len(sorted_bids)):
         sum+=sorted_bids[i]*(i+1)
-
     return sum
 
 def part1(input):
@@ -34,7 +33,6 @@ def part1(input):
     sum = 0 
     for i in range(len(sorted_bids)):
         sum+=sorted_bids[i]*(i+1)
-
     return sum
 
 def get_class(uniq_cards, hand, j):
@@ -58,7 +56,6 @@ def get_class(uniq_cards, hand, j):
     else:
         adder = 1
     return adder
-
 
 if __name__ == "__main__":
     main()
